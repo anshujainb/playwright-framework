@@ -1,4 +1,5 @@
 import pytest
+import os
 
 
 from utils.api_client import (
@@ -53,4 +54,35 @@ def checkout_page(cart_page):
     checkout_page = CheckoutPage(cart_page.page)
     return checkout_page
 
+import os
+import pytest
+import allure
 
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    rep = outcome.get_result()
+
+    if rep.when == "call" and rep.failed:
+
+        page = item.funcargs.get("page")
+
+        if page:
+            screenshots_dir = "screenshots"
+            os.makedirs(screenshots_dir, exist_ok=True)
+
+            screenshot_path = f"{screenshots_dir}/{item.name}.png"
+
+            # 1. Take screenshot
+            page.screenshot(path=screenshot_path)
+
+            # 2. Attach to Allure report
+            with open(screenshot_path, "rb") as image_file:
+                allure.attach(
+                    image_file.read(),
+                    name="Failure Screenshot",
+                    attachment_type=allure.attachment_type.PNG
+                )
+
+            print(f"\nScreenshot saved + attached to Allure: {screenshot_path}")
