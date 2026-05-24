@@ -28,3 +28,10 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+allure-results/
+allure-report/
+screenshots/
+*.png
+__pycache__/
+.pytest_cache/
