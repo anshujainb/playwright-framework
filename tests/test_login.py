@@ -15,6 +15,7 @@ def test_valid_login(login_page):
 
     # Verify inventory page visible
    # expect(page.locator(".inventory_list")).to_be_visible()
+   
 @allure.title("login test failed")
 def test_fail(page):
     page.goto("https://example.com")
